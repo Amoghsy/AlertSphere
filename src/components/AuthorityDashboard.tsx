@@ -15,7 +15,6 @@ import {
   Package,
   Radio,
   BarChart3,
-  Search,
   Bell,
   User,
   Menu,
@@ -90,7 +89,7 @@ export function AuthorityDashboard({ onLogout }: AuthorityDashboardProps) {
   const [resources, setResources] = useState<ResourceData[]>([]);
   const [broadcasts, setBroadcasts] = useState<BroadcastData[]>([]);
 
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
 
   // 🔹 Form States
   const [teamName, setTeamName] = useState("");
