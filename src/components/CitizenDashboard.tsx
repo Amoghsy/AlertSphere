@@ -65,7 +65,7 @@ useEffect(() => {
     }
 
     // Send token to Node.js server so push can work
-    await fetch("http://localhost:5000/register-token", {
+    await fetch("https://alertspherenotifyserver.onrender.com/register-token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
