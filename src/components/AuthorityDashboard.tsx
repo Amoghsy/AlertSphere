@@ -204,7 +204,7 @@ const handleSendBroadcast = async (e: React.FormEvent) => {
 
   try {
     // 1️⃣ Send push notification via Node.js server
-    const response = await fetch("http://localhost:5000/send-broadcast", {
+    const response = await fetch("https://alertspherenotifyserver.onrender.com/send-broadcast", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
