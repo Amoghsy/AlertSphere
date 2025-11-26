@@ -98,6 +98,17 @@ export function ReportIncidentModal({ open, onClose }: ReportIncidentModalProps)
         description,
         timestamp: serverTimestamp(),
       });
+      await addDoc(
+      collection(db, "citizenReports",),
+      {
+        incidentType,
+        severity,
+        location,
+        description,
+        timestamp: serverTimestamp(),
+        
+      }
+    );
 
       console.log("✅ Incident submitted! Document ID:", docRef.id);
       alert("✅ Incident reported successfully!");

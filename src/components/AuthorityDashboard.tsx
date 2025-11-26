@@ -15,7 +15,6 @@ import {
   Package,
   Radio,
   BarChart3,
-  Bell,
   User,
   Menu,
   ChevronLeft,
@@ -194,18 +193,51 @@ export function AuthorityDashboard({ onLogout }: AuthorityDashboardProps) {
   };
 
   // ➕ Send Broadcast
-  const handleSendBroadcast = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!broadcastTitle || !broadcastMessage)
-      return alert("⚠️ Please enter both title and message!");
+  // ➕ Send Broadcast (FCM + Firestore)
+const handleSendBroadcast = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!broadcastTitle || !broadcastMessage) {
+    alert("⚠️ Please enter both title and message!");
+    return;
+  }
+
+  try {
+    // 1️⃣ Send push notification via Node.js server
+    const response = await fetch("http://localhost:5000/send-broadcast", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: broadcastTitle,
+        message: broadcastMessage,
+      }),
+    });
+
+    const resData = await response.json();
+    console.log("Broadcast Push Result:", resData);
+
+    if (!response.ok) {
+      alert("❌ Failed to send push notification to citizens.");
+    } else {
+      alert("✅ Push Notification Sent to Citizens!");
+    }
+
+    // 2️⃣ Save broadcast to Firestore history
     await addDoc(collection(db, "broadcasts"), {
       title: broadcastTitle,
       message: broadcastMessage,
       timestamp: serverTimestamp(),
     });
+
+    // Reset fields
     setBroadcastTitle("");
     setBroadcastMessage("");
-  };
+  } catch (error) {
+    console.error("❌ Broadcast error:", error);
+    alert("❌ Error sending broadcast!");
+  }
+};
+
 
   // 📊 Dashboard Stats
   const activeAlerts = incidents.filter((i) => i.severity === "critical").length;
@@ -303,12 +335,7 @@ const mapMarkers = incidents.map((incident) => {
           <h1 className="text-slate-900 font-medium">
             {menuItems.find((i) => i.id === activeSection)?.label}
           </h1>
-          <Button variant="ghost" size="sm" className="relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs flex items-center justify-center rounded-full">
-              {incidents.length}
-            </span>
-          </Button>
+          
         </header>
 
         {/* Main Sections */}

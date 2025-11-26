@@ -1,9 +1,17 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+  isSupported,
+} from "firebase/messaging";
+import type { Messaging } from "firebase/messaging";
 
+// -------------------------------------------
+// FIREBASE CONFIG
+// -------------------------------------------
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -17,37 +25,114 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
 
-async function initNotifications() {
-  const permission = await Notification.requestPermission();
-  if (permission === "granted") {
-    const token = await getToken(messaging, {
-      vapidKey: "SBmTdRyrJjv7rVSEROQVSu-DmqrzySqyyNy8nkNt2-w",
-    });
-    console.log("Citizen FCM token:", token);
-    // This token can be subscribed to "alerts" topic on backend if needed
+// Auth + Firestore
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+export const db = getFirestore(app);
+
+// -------------------------------------------
+// FIREBASE CLOUD MESSAGING (FCM)
+// -------------------------------------------
+
+let messaging: Messaging | null = null;
+
+// Initialize messaging only if supported
+(async () => {
+  const supported = await isSupported();
+  if (supported) {
+    messaging = getMessaging(app);
   } else {
-    console.log("Notifications permission denied");
+    console.warn("⚠️ Firebase Messaging is NOT supported in this browser.");
+  }
+})();
+
+// -------------------------------------------
+// REQUEST NOTIFICATION PERMISSION (EXPORT THIS)
+// -------------------------------------------
+
+async function waitForMessaging(timeout = 5000): Promise<void> {
+  const interval = 50;
+  const maxAttempts = Math.ceil(timeout / interval);
+  let attempts = 0;
+  return new Promise((resolve, reject) => {
+    const id = setInterval(() => {
+      if (messaging) {
+        clearInterval(id);
+        resolve();
+      } else if (++attempts >= maxAttempts) {
+        clearInterval(id);
+        reject(new Error("Messaging not initialized within timeout"));
+      }
+    }, interval);
+  });
+}
+
+export async function requestNotificationPermission() {
+  console.log("🔵 Requesting Notification Permission...");
+
+  try {
+    const permission = await Notification.requestPermission();
+    console.log("🔵 Permission result:", permission);
+
+    if (permission !== "granted") {
+      console.warn("❌ Permission NOT granted.");
+      return null;
+    }
+
+    console.log("🔵 Registering Service Worker...");
+    const swReg = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+    console.log("🟢 Service Worker Registered:", swReg);
+
+    console.log("🔵 Getting messaging instance...");
+    await waitForMessaging();
+
+    console.log("🔵 Fetching FCM token...");
+    const token = await getToken(messaging!, {
+      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      serviceWorkerRegistration: swReg,
+    });
+
+    console.log("🟢 FCM Token:", token);
+    return token;
+
+  } catch (error: any) {
+    console.error("❌ FCM ERROR (RAW):", error);
+    console.error("❌ FCM ERROR message:", error?.message);
+    console.error("❌ FCM ERROR code:", error?.code);
+    console.error("❌ FCM ERROR string:", error?.toString());
+    console.error("❌ FCM ERROR JSON:", JSON.stringify(error));
+
+    // More detailed error from PushManager (if available)
+    if (error && error.name) console.error("❌ Error Name:", error.name);
+    if (error && error.stack) console.error("❌ Error Stack:", error.stack);
+
+    return null;
   }
 }
 
-// Listen for foreground notifications
-onMessage(messaging, (payload) => {
-  console.log("Foreground notification:", payload);
-  const title = payload.notification?.title ?? "Alert";
-  const body = payload.notification?.body ?? "";
 
-  // Only create a Notification when the API is available and we have a title
-  if (typeof window !== "undefined" && "Notification" in window && title) {
+// -------------------------------------------
+// FOREGROUND NOTIFICATION LISTENER
+// -------------------------------------------
+
+export function listenForForegroundNotifications() {
+  if (!messaging) return;
+
+  onMessage(messaging, (payload) => {
+    console.log("🔥 Foreground notification received:", payload);
+
+    const { title, body } = payload.notification || {};
+
+    if (!title) return;
+
     new Notification(title, {
       body,
       icon: "/icons/alert.png",
     });
-  }
-});
+  });
+}
+const swReg = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
 
-initNotifications();
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-export const db = getFirestore(app);
+console.log("SW registered:", swReg);
+
