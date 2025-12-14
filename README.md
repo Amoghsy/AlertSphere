@@ -58,7 +58,7 @@ This project is built using the React + TypeScript + Vite template, offering fas
 
 📦 Installation
 # Clone the repository
-git clone https://github.com/your-username/alertsphere.git
+git clone https://github.com/Amoghsy/alertsphere.git
 
 # Navigate to the project directory
 cd alertsphere
@@ -116,6 +116,4 @@ Feel free to fork the repository, create a feature branch, and submit a pull req
 
 This project is licensed under the MIT License.
 
-📌 Project Status
 
-🟡 In Development – Actively evolving with planned feature expansions.
