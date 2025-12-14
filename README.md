@@ -1,73 +1,121 @@
-# React + TypeScript + Vite
+🌐 AlertSphere
+AI-Powered Disaster Awareness & Emergency Coordination Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AlertSphere is a web-based disaster awareness and emergency coordination platform designed to deliver real-time, verified information during natural calamities such as floods, earthquakes, cyclones, and wildfires. The platform leverages AI-driven data analysis and integrates multiple trusted data sources to provide accurate, localized alerts while minimizing misinformation and response delays.
 
-Currently, two official plugins are available:
+🚨 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Real-Time Alert Engine
+Disseminates instant disaster warnings to citizens based on verified inputs.
 
-## React Compiler
+Data Aggregation & Verification Module
+Filters and validates information from:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Meteorological reports
 
-## Expanding the ESLint configuration
+Satellite data
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+IoT sensor inputs
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Verified social media signals
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Geolocation-Based Mapping System
+Visualizes affected regions, danger zones, and safe evacuation routes.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Authority Command Dashboard
+Enables government bodies and officials to broadcast official updates and instructions.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Resource & Rescue Coordination Interface
+Assists in efficiently routing emergency services, rescue teams, and resources.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+🎯 Objectives
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Reduce the spread of misinformation during disasters
+
+Improve response time through real-time alerts
+
+Enable transparent communication between authorities and citizens
+
+Strengthen public safety and disaster preparedness
+
+🛠️ Tech Stack
+
+Frontend: React + TypeScript
+
+Build Tool: Vite
+
+Styling: CSS / Tailwind (optional)
+
+Linting: ESLint
+
+State Management: React Hooks / Context API (extendable)
+
+Maps & Geolocation: (Planned integration – e.g., Mapbox / Google Maps)
+
+⚡ Project Setup
+
+This project is built using the React + TypeScript + Vite template, offering fast builds, Hot Module Replacement (HMR), and an optimized developer experience.
+
+📦 Installation
+# Clone the repository
+git clone https://github.com/your-username/alertsphere.git
+
+# Navigate to the project directory
+cd alertsphere
+
+# Install dependencies
+npm install
+
+▶️ Run the Development Server
+npm run dev
+
+
+The app will be available at:
+👉 http://localhost:5173
+
+🔌 Vite React Plugins
+
+This project supports the following official Vite plugins:
+
+@vitejs/plugin-react – Uses Babel (or oxc) for Fast Refresh
+
+@vitejs/plugin-react-swc – Uses SWC for faster builds and refresh
+
+🧪 Linting & Code Quality
+
+For production-grade applications, type-aware ESLint rules can be enabled to ensure better code safety and consistency.
+
+Optional ESLint enhancements:
+
+Type-checked rules for TypeScript
+
+React-specific linting using:
+
+eslint-plugin-react-x
+
+eslint-plugin-react-dom
+
+🚀 Future Enhancements
+
+AI-based disaster prediction models
+
+Mobile application integration
+
+Multilingual alert support
+
+Offline alert caching for low-network areas
+
+Real-time rescue team tracking
+
+🤝 Contributing
+
+Contributions are welcome!
+Feel free to fork the repository, create a feature branch, and submit a pull request.
+
+📄 License
+
+This project is licensed under the MIT License.
+
+📌 Project Status
+
+🟡 In Development – Actively evolving with planned feature expansions.
